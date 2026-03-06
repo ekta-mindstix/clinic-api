@@ -15,3 +15,6 @@ class Department(TimestampMixin, db.Model):
         back_populates="departments",
         lazy="selectin",
     )
+
+    def __repr__(self) -> str:
+        return f"<Department id={self.id} name='{self.name}'>"
