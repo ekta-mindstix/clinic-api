@@ -1,0 +1,3 @@
+Run migrations with Poetry:
+
+poetry run flask --app api.main db upgrade
