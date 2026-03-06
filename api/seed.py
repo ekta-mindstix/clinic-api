@@ -1,7 +1,6 @@
 from api.auth.models import User
 from api.core.enum import RoleEnum
 from api.core.extensions import db
-from api.core.security import hash_password
 from api.departments.models import Department
 from api.doctors.models import Doctor
 
@@ -12,9 +11,9 @@ def seed_data() -> None:
         admin = User(
             email="admin@clinic.local",
             full_name="System Admin",
-            password_hash=hash_password("Admin@123"),
-            role=RoleEnum.ADMIN.value,
+            role=RoleEnum.ADMIN,
         )
+        admin.set_password("Admin@123")
         db.session.add(admin)
 
     member = User.query.filter_by(email="member@clinic.local").first()
@@ -22,9 +21,9 @@ def seed_data() -> None:
         member = User(
             email="member@clinic.local",
             full_name="John Member",
-            password_hash=hash_password("Member@123"),
-            role=RoleEnum.MEMBER.value,
+            role=RoleEnum.MEMBER,
         )
+        member.set_password("Member@123")
         db.session.add(member)
 
     cardio = Department.query.filter_by(name="Cardiology").first()
@@ -37,9 +36,9 @@ def seed_data() -> None:
         doctor_user = User(
             email="doctor@clinic.local",
             full_name="Dr. Alice Carter",
-            password_hash=hash_password("Doctor@123"),
-            role=RoleEnum.DOCTOR.value,
+            role=RoleEnum.DOCTOR,
         )
+        doctor_user.set_password("Doctor@123")
         db.session.add(doctor_user)
         db.session.flush()
 

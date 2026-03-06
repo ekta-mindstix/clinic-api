@@ -1,11 +1,12 @@
 from flask import Flask, jsonify
 
+from api.appointments.routes import appointments_bp
 from api.auth.routes import auth_bp
 from api.core.config import Settings
 from api.core.exceptions import register_error_handlers
 from api.core.extensions import db, jwt, migrate
 from api.departments.routes import departments_bp
-from api.doctors.routes import doctors_bp
+from api.doctors.routes import doctor_availability_bp, doctors_bp
 
 
 def create_app(config_object: type[Settings] = Settings) -> Flask:
@@ -13,6 +14,7 @@ def create_app(config_object: type[Settings] = Settings) -> Flask:
     app.config.from_object(config_object)
 
     # Import model modules explicitly so SQLAlchemy metadata is registered.
+    from api.appointments import models as _appointments_models  # noqa: F401
     from api.auth import models as _auth_models  # noqa: F401
     from api.departments import models as _departments_models  # noqa: F401
     from api.doctors import models as _doctors_models  # noqa: F401
@@ -24,6 +26,8 @@ def create_app(config_object: type[Settings] = Settings) -> Flask:
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(departments_bp, url_prefix="/admin/departments")
     app.register_blueprint(doctors_bp, url_prefix="/admin")
+    app.register_blueprint(doctor_availability_bp, url_prefix="/doctors")
+    app.register_blueprint(appointments_bp, url_prefix="/appointments")
 
     register_error_handlers(app)
     register_jwt_handlers()
