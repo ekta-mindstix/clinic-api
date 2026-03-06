@@ -9,6 +9,20 @@ doctor_departments = db.Table(
 )
 
 
+class DoctorAvailability(TimestampMixin, db.Model):
+    __tablename__ = "doctor_availabilities"
+
+    id = db.Column(db.Integer, primary_key=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey("doctors.id"), nullable=False, index=True)
+    start_at = db.Column(db.DateTime, nullable=False)
+    end_at = db.Column(db.DateTime, nullable=False)
+
+    doctor = db.relationship("Doctor", back_populates="availabilities")
+
+    def __repr__(self) -> str:
+        return f"<DoctorAvailability id={self.id} doctor_id={self.doctor_id} start_at='{self.start_at}' end_at='{self.end_at}'>"
+
+
 class Doctor(TimestampMixin, db.Model):
     __tablename__ = "doctors"
 
@@ -24,3 +38,8 @@ class Doctor(TimestampMixin, db.Model):
         back_populates="doctors",
         lazy="selectin",
     )
+    availabilities = db.relationship("DoctorAvailability", back_populates="doctor", lazy="selectin")
+    appointments = db.relationship("Appointment", back_populates="doctor", lazy="selectin")
+
+    def __repr__(self) -> str:
+        return f"<Doctor id={self.id} user_id={self.user_id} license='{self.license_number}'>"
